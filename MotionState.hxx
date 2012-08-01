@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <opencv/cv.h>
+#include <cv.h>
 
 namespace ISentry
 {

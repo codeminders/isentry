@@ -28,8 +28,8 @@
 #endif 
 
 #include <vector>
-#include "opencv/cv.h"
-#include "opencv/highgui.h"
+#include <cv.h>
+#include <highgui.h>
 
 using namespace std;
 

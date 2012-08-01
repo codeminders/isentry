@@ -2,7 +2,7 @@
 #define __FRAME_PROCESSOR_HXX__
 
 #include <vector>
-#include <opencv/cv.h>
+#include <cv.h>
 
 namespace ISentry
 {

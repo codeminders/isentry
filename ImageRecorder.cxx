@@ -2,8 +2,8 @@
 #include <time.h>
 #include <iostream>
 
-#include <opencv/cv.h>
-#include <opencv2/highgui/highgui.hpp>
+#include <cv.h>
+#include <highgui/highgui.hpp>
 
 #include "ImageRecorder.hxx"
 

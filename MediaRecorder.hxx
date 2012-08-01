@@ -3,7 +3,7 @@
 
 #include <time.h>
 
-#include <opencv/cv.h>
+#include <cv.h>
 
 namespace ISentry
 {

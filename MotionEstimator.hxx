@@ -6,8 +6,8 @@
 
 #include <libconfig.h++>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <cv.h>
+#include <highgui.h>
 
 #include "FrameProcessor.hxx"
 #include "MotionState.hxx"

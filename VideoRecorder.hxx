@@ -5,8 +5,8 @@
 
 #include <libconfig.h++>
 
-#include <opencv/cv.h>
-#include <opencv2/highgui/highgui.hpp>
+#include <cv.h>
+#include <highgui/highgui.hpp>
 
 #include "FrameProcessor.hxx"
 #include "MediaRecorder.hxx"

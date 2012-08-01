@@ -2,7 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(iSentry)
 
-include_directories(/opt/local/include)
+include_directories(/opt/local/include /opt/local/include/opencv
+/opt/local/include/opencv2 /usr/include/opencv)
 link_directories (/opt/local/lib)
 
 set(CMAKE_CXX_FLAGS "-g -Wall")

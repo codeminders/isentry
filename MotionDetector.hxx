@@ -1,6 +1,8 @@
 #ifndef __MOTION_DETECTOR_HXX__
 #define __MOTION_DETECTOR_HXX__
 
+#include <deque>
+
 #include <libconfig.h++>
 
 #include "MotionState.hxx"

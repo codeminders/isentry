@@ -41,9 +41,9 @@ namespace ISentry
         cv::Mat diff;
         cv::Mat small;
 
-        int detection_window_size;
+        size_t detection_window_size;
         int internal_frame_width;
-        int smoothing_window_size;
+        size_t smoothing_window_size;
 
         std::deque<cv::Mat> buf;
         std::vector<float> raw_motion;

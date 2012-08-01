@@ -1,5 +1,6 @@
 
 #include <cmath>
+#include <limits>
 
 #include "MotionEstimator.hxx"
 

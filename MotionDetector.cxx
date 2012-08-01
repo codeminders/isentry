@@ -1,9 +1,11 @@
 #include "MotionDetector.hxx"
 
+#include <iostream>
+
 using namespace std;
 
 ISentry::MotionDetector::MotionDetector(MotionState *_tap, const libconfig::Setting& cfg):
-    tap(_tap),in_motion(FALSE)
+    tap(_tap),in_motion(false)
 {
     threshold = cfg["threshold"];
     backup_frames = cfg["backup_frames"];
@@ -51,7 +53,7 @@ void ISentry::MotionDetector::addFrame(std::pair<cv::Mat,time_t> &m)
             // And finally current frame
             (*i)->addFrame(m);
         }
-        in_motion = TRUE;
+        in_motion = true;
     } else
     {
         if(in_motion)
@@ -62,7 +64,7 @@ void ISentry::MotionDetector::addFrame(std::pair<cv::Mat,time_t> &m)
             {
                 (*i)->stop();
             }
-            in_motion = FALSE;
+            in_motion = false;
         }
         if(backup_frames>0)
         {

@@ -9,7 +9,7 @@ using namespace std;
 using namespace cv;
 
 ISentry::MediaRecorder::MediaRecorder()
-    :enabled(FALSE),last_time(0),seq(0),files_recorded(0)
+    :enabled(false),last_time(0),seq(0),files_recorded(0)
 {
 }
 

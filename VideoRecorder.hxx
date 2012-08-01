@@ -6,7 +6,7 @@
 #include <libconfig.h++>
 
 #include <cv.h>
-#include <highgui/highgui.hpp>
+#include <highgui.hpp>
 
 #include "FrameProcessor.hxx"
 #include "MediaRecorder.hxx"

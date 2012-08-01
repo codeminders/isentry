@@ -28,6 +28,12 @@ public:
         namedWindow("diff",1);
         CvPlot::Figure *f = CvPlot::getPlotManager()->AddFigure("motion");
         f->setCustomYRange(0,1);
+        float threshold;
+        if(cfg.lookupValue("threshold",threshold))
+        {
+            for(int i=0;i<nframes;i++)
+                threshold_points.push_back(threshold);
+        }
     }
 
     virtual void stop()
@@ -58,6 +64,8 @@ public:
             f->Clear();
             CvPlot::plot("motion", &(*(motion.begin())), motion.size());
             CvPlot::plot("motion", &(*(raw_motion.begin())), raw_motion.size());
+            if(!threshold_points.empty())
+                CvPlot::plot("motion", &(*(threshold_points.begin())), threshold_points.size());
         }
         imshow("preview", frames[0]);
         if(signals[0]>0)
@@ -84,6 +92,7 @@ private:
 
     vector<float> motion;
     vector<float> raw_motion;
+    vector<float> threshold_points;
     MotionState *ms;    
     int nframes;
 };

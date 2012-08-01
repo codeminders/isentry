@@ -33,7 +33,7 @@ namespace ISentry
 
     private:
         // pre-motion 
-        int backup_frames;
+        size_t backup_frames;
         std::deque<std::pair<cv::Mat,time_t> > buf;
         bool in_motion;
 

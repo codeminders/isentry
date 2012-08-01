@@ -31,7 +31,7 @@ public:
         float threshold;
         if(cfg.lookupValue("threshold",threshold))
         {
-            for(int i=0;i<nframes;i++)
+            for(size_t i=0;i<nframes;i++)
                 threshold_points.push_back(threshold);
         }
     }
@@ -83,7 +83,7 @@ private:
     {
         motion.clear();
         raw_motion.clear();
-        for(int i=0;i<nframes;i++)
+        for(size_t i=0;i<nframes;i++)
         {
             motion.insert(motion.begin(),0);
             raw_motion.insert(raw_motion.begin(),0);
@@ -94,7 +94,7 @@ private:
     vector<float> raw_motion;
     vector<float> threshold_points;
     MotionState *ms;    
-    int nframes;
+    size_t nframes;
 };
 
 int main(int ac, char**av)

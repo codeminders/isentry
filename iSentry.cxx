@@ -22,7 +22,7 @@ public:
 
     SimplePreview(MotionState *_ms, const libconfig::Setting& cfg) : ms(_ms)
     {
-        nframes = cfg["frames"];
+        nframes = (int)cfg["frames"];
         reset();
         namedWindow("preview",1);
         namedWindow("diff",1);

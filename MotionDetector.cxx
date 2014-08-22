@@ -8,7 +8,7 @@ ISentry::MotionDetector::MotionDetector(MotionState *_tap, const libconfig::Sett
     tap(_tap),in_motion(false)
 {
     threshold = cfg["threshold"];
-    backup_frames = cfg["backup_frames"];
+    backup_frames = (int)cfg["backup_frames"];
     running = false;
 }
 

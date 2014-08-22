@@ -9,9 +9,9 @@ using namespace std;
 
 ISentry::MotionEstimator::MotionEstimator(const libconfig::Setting& cfg)
 {
-    detection_window_size = cfg["detection_window_size"];
+    detection_window_size = (int)cfg["detection_window_size"];
     internal_frame_width  = cfg["internal_frame_width"];
-    smoothing_window_size = cfg["smoothing_window_size"];
+    smoothing_window_size = (int)cfg["smoothing_window_size"];
 }
 
 void ISentry::MotionEstimator::reset()

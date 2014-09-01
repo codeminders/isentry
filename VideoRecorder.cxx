@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include <cv.h>
-#include <highgui.hpp>
+#include <highgui/highgui.hpp>
 
 #include "VideoRecorder.hxx"
 

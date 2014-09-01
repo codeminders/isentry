@@ -1,7 +1,7 @@
 #include "MediaRecorder.hxx"
 
 #include <cv.h>
-#include <highgui.hpp>
+#include <highgui/highgui.hpp>
 
 #include "ImageRecorder.hxx"
 

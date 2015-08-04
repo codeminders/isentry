@@ -2,6 +2,7 @@
 
 #include <cv.h>
 #include <highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include "ImageRecorder.hxx"
 

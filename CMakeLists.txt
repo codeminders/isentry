@@ -13,6 +13,6 @@ MotionDetector.cxx MotionEstimator.cxx FrameProcessor.cxx
 MediaRecorder.cxx ImageRecorder.cxx VideoRecorder.cxx  cvplot.cxx)
 
 TARGET_LINK_LIBRARIES(iSentry opencv_core opencv_imgproc
-opencv_calib3d opencv_features2d opencv_highgui m config++ ${EXTERNAL_LIBS})
+opencv_videoio opencv_imgcodecs opencv_calib3d opencv_features2d opencv_highgui m config++ ${EXTERNAL_LIBS})
 
 

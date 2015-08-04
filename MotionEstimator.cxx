@@ -4,6 +4,8 @@
 
 #include "MotionEstimator.hxx"
 
+#include <opencv2/imgproc.hpp>
+
 using namespace cv;
 using namespace std;
 

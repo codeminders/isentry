@@ -1,0 +1,242 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      8379,        233]
+NotebookOptionsPosition[      7761,        208]
+NotebookOutlinePosition[      8144,        225]
+CellTagsIndexPosition[      8101,        222]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[StyleBox["Experiments to detect \[OpenCurlyDoubleQuote]flicker\
+\[CloseCurlyDoubleQuote] caused by camera\[CloseCurlyQuote]s automatic \
+correction of exposition parameters. Such changes should be distinguished \
+from actual movement and should not trigger motion detection.", "Section"]], \
+"Text",
+ CellChangeTimes->{{3.64773330234697*^9, 3.6477333640058947`*^9}}],
+
+Cell["Load raw video:", "Text",
+ CellChangeTimes->{{3.64773378837541*^9, 3.647733794891643*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"flicker", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+     RowBox[{"ToFileName", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"ParentDirectory", "[", 
+         RowBox[{"NotebookDirectory", "[", "]"}], "]"}], " ", "<>", " ", 
+        "\"\</samples/\>\""}], ",", "\"\<flicker.mov\>\""}], "]"}], ",", " ", 
+     "\"\<Data\>\""}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.6477334098731213`*^9, {3.647734337335331*^9, 3.64773435125495*^9}, {
+   3.647734523778762*^9, 3.6477345273708973`*^9}, {3.647734594167144*^9, 
+   3.647734594393841*^9}, {3.6477347453722153`*^9, 3.647734750971486*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nframes", " ", "=", " ", 
+   RowBox[{"Length", "[", "flicker", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6477347525246353`*^9, 3.6477347735842133`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"noflicker", "=", 
+   RowBox[{
+    RowBox[{"Import", "[", 
+     RowBox[{
+      RowBox[{"ToFileName", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ParentDirectory", "[", 
+          RowBox[{"NotebookDirectory", "[", "]"}], "]"}], " ", "<>", " ", 
+         "\"\</samples/\>\""}], ",", "\"\<noflicker.mov\>\""}], "]"}], ",", 
+      " ", "\"\<Data\>\""}], "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{"1", ";;", " ", "nframes"}], "]"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6477347666969213`*^9, 3.6477347888089657`*^9}, {
+  3.647734831578472*^9, 3.647734831774457*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"scaleBW", "[", "r_", "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "orig", ",", " ", "origc", ",", " ", "meanKernel", ",", "scaleFactor", 
+       ",", "origdim"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"orig", " ", "=", 
+       RowBox[{"Map", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"#", ".", 
+            RowBox[{"{", 
+             RowBox[{"0.3", ",", "0.59", ",", "0.11"}], "}"}]}], ")"}], "&"}],
+          ",", "r", ",", 
+         RowBox[{"{", "3", "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"origdim", "=", 
+       RowBox[{"Dimensions", "[", "orig", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"scaleFactor", " ", "=", " ", "2"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"meanKernel", "=", 
+       RowBox[{
+        RowBox[{"BoxMatrix", "[", "scaleFactor", "]"}], "/", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"2", "*", "scaleFactor"}], "+", "1"}], ")"}], "^", "2"}], 
+         ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"origc", "=", 
+       RowBox[{"Map", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"ListConvolve", "[", 
+           RowBox[{"meanKernel", ",", "#", ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "1"}], ",", 
+              RowBox[{"-", "1"}]}], "}"}], ",", "0"}], "]"}], "&"}], " ", ",",
+          "orig"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Map", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Take", "[", 
+          RowBox[{"#", ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", 
+             RowBox[{"origdim", "[", 
+              RowBox[{"[", "2", "]"}], "]"}], ",", "scaleFactor"}], "}"}], 
+           ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", 
+             RowBox[{"origdim", "[", 
+              RowBox[{"[", "3", "]"}], "]"}], ",", "scaleFactor"}], "}"}]}], 
+          "]"}], "&"}], ",", "origc"}], "]"}]}]}], "\[IndentingNewLine]", 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.647734246525668*^9, 3.6477343187983503`*^9}, {
+  3.647734356356254*^9, 3.6477343639497643`*^9}, {3.647734461140377*^9, 
+  3.647734489872014*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"flickerbw", " ", "=", " ", 
+   RowBox[{"scaleBW", "[", "flicker", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"noflickerbw", " ", "=", " ", 
+   RowBox[{"scaleBW", "[", "noflicker", "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.647734372712655*^9, 3.6477343903936663`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"GraphicsRow", "[", "\[IndentingNewLine]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Image", "[", 
+       RowBox[{
+        RowBox[{"flickerbw", "[", 
+         RowBox[{"[", "f", "]"}], "]"}], ",", "\"\<Byte\>\""}], "]"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Image", "[", 
+       RowBox[{
+        RowBox[{"noflickerbw", "[", 
+         RowBox[{"[", "f", "]"}], "]"}], ",", "\"\<Byte\>\""}], "]"}]}], 
+     "\[IndentingNewLine]", "}"}], "]"}], " ", ",", 
+   RowBox[{"{", 
+    RowBox[{"f", ",", "1", ",", "nframes", ",", "1"}], "}"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{
+  3.647733626372628*^9, {3.647734618377987*^9, 3.647734622749722*^9}, {
+   3.647734840890657*^9, 3.647734862288096*^9}, {3.647735044964829*^9, 
+   3.647735080111416*^9}, 3.647735233179311*^9}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`f$$ = 97, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`f$$], 1, 97, 1}}, Typeset`size$$ = {360., {92., 96.}},
+     Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`f$5776$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, "Variables" :> {$CellContext`f$$ = 1}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`f$$, $CellContext`f$5776$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> GraphicsRow[{
+         Image[
+          Part[$CellContext`flickerbw, $CellContext`f$$], "Byte"], 
+         Image[
+          Part[$CellContext`noflickerbw, $CellContext`f$$], "Byte"]}], 
+      "Specifications" :> {{$CellContext`f$$, 1, 97, 1}}, "Options" :> {}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{405., {136., 141.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{3.6477351987978*^9, 3.647735233869008*^9}]
+}, Open  ]]
+},
+WindowToolbars->"EditBar",
+WindowSize->{740, 602},
+WindowMargins->{{Automatic, 146}, {3, Automatic}},
+FrontEndVersion->"9.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 25, \
+2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 380, 5, 152, "Text"],
+Cell[940, 27, 96, 1, 30, "Text"],
+Cell[1039, 30, 639, 15, 46, "Input"],
+Cell[1681, 47, 193, 4, 28, "Input"],
+Cell[1877, 53, 621, 16, 63, "Input"],
+Cell[2501, 71, 2346, 62, 165, "Input"],
+Cell[4850, 135, 327, 7, 46, "Input"],
+Cell[CellGroupData[{
+Cell[5202, 146, 873, 22, 97, "Input"],
+Cell[6078, 170, 1667, 35, 328, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

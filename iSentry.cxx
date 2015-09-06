@@ -146,7 +146,7 @@ int main(int argc, char**argv)
     {
         //reading from file
         std::cerr << "Reading file " << argv[0] << std::endl;
-        cap.open(argv[1]);
+        cap.open(argv[0]);
     }
     if(!cap.isOpened())  // check if we succeeded
         exit(-1);

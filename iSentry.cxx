@@ -1,6 +1,7 @@
 #include <cv.h>
 #include <highgui.h>
 #include <iostream>
+#include <unistd.h>
 
 #include "iSentryConfig.hxx"
 #include "MotionDetector.hxx"
@@ -97,30 +98,58 @@ private:
     size_t nframes;
 };
 
-int main(int ac, char**av)
+void usage()
 {
+    std::cerr << "Usage: ./iSentry [-c config_filename] [videofile]" << std::endl;
+}
+
+int main(int argc, char**argv)
+{
+    int ch;
+
+    const char *cfile=CONFIG_FILE_NAME;
+    while ((ch = getopt(argc, argv, "c:")) != -1)
+    {
+        switch (ch)
+        {
+        case 'c':
+            cfile = strdup(optarg);
+            break;
+        case '?':
+        default:
+            usage();
+            exit(2);
+        }
+    }
+    argc -= optind;
+    argv += optind;
+
+    iSentryConfig *iconf = iSentryConfig::getInstance();
     try
     {
-        if(ac==1)
-            iSentryConfig::getInstance()->readFile(CONFIG_FILE_NAME);
-        else if(ac==2)
-            iSentryConfig::getInstance()->readFile(av[1]);
-        else
-        {
-            std::cerr << "Usage: ./iSentry [config_filename]" << std::endl;
-            exit(1);
-        }
+        iconf->readFile(cfile);
     } catch(const libconfig::FileIOException &fioex)
     {
         std::cerr << "Error reading config file." << std::endl;
         exit(2);
     }
+    iconf->setAutoConvert(true);
+    const libconfig::Setting& cfg = iconf->getRoot();
 
-    const libconfig::Setting& cfg = iSentryConfig::getInstance()->getRoot();
-
-    VideoCapture cap((int)(cfg["application"]["camera_device_id"])); // open the default camera
+    VideoCapture cap;
+    if(argc<=0)
+    {
+        std::cerr << "Reading camera " << std::endl;
+        // reading from camera
+        cap.open((int)(cfg["application"]["camera_device_id"]));
+    } else
+    {
+        //reading from file
+        std::cerr << "Reading file " << argv[0] << std::endl;
+        cap.open(argv[1]);
+    }
     if(!cap.isOpened())  // check if we succeeded
-        return -1;
+        exit(-1);
 
     MotionEstimator me(cfg["motion_detection"]);
     MotionDetector md(&me, cfg["motion_detection"]);

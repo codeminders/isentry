@@ -65,7 +65,7 @@ void ISentry::MotionEstimator::addFrame(std::pair<cv::Mat,time_t> &tframe)
         Mat fit;
         if(!solve(fm1, smallv, fit, DECOMP_SVD))
         {
-            std::cerr  << "SVD error\n";
+            //std::cerr  << "SVD error\n";
             // Add to average w/o linear transform
             add(avg, fm/buf.size(), (Mat&)avg);
         } else
@@ -73,8 +73,8 @@ void ISentry::MotionEstimator::addFrame(std::pair<cv::Mat,time_t> &tframe)
             float k=fit.at<float>(0);
             float b=fit.at<float>(1);
             
-            if(n==0)
-                std::cerr  << "SVD OK " << k << ", " << b <<"\n";
+            //if(n==0)
+            //   std::cerr  << "SVD OK " << k << ", " << b <<"\n";
             Mat ft;
             // linear transofrm
             fm.convertTo(ft,-1,k,b);

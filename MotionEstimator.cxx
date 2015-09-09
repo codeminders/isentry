@@ -9,6 +9,12 @@
 using namespace cv;
 using namespace std;
 
+/**
+ * Enable linear correction of brightness to handle "flicker" effect
+ * due auto-exposure correction on some cameras
+ */
+#define LINEAR_CORRECTION 
+
 ISentry::MotionEstimator::MotionEstimator(const libconfig::Setting& cfg)
 {
     detection_window_size = (int)cfg["detection_window_size"];
@@ -41,10 +47,46 @@ void ISentry::MotionEstimator::addFrame(std::pair<cv::Mat,time_t> &tframe)
     if(buf.empty())
         buf.push_back(smallf);
 
+#ifdef LINEAR_CORRECTION 
+    int smalllen = newSize.width*newSize.height;
+    Mat smallv = smallf.reshape(1, smalllen);
+    int n=0;
+    Mat small1 = Mat::ones(smalllen,1, DataType<float>::type);
+#endif
+    
     Mat avg(newSize, DataType<float>::type, (float)0);
     for(std::deque<Mat>::const_iterator i=buf.begin(); i != buf.end(); i++)
+    {
+#ifdef LINEAR_CORRECTION 
+        const Mat &fm = (*i);
+        Mat fv = fm.reshape(1, smalllen);
+        Mat fm1;
+        hconcat(fv, small1, fm1);
+        Mat fit;
+        if(!solve(fm1, smallv, fit, DECOMP_SVD))
+        {
+            std::cerr  << "SVD error\n";
+            // Add to average w/o linear transform
+            add(avg, fm/buf.size(), (Mat&)avg);
+        } else
+        {
+            float k=fit.at<float>(0);
+            float b=fit.at<float>(1);
+            
+            if(n==0)
+                std::cerr  << "SVD OK " << k << ", " << b <<"\n";
+            Mat ft;
+            // linear transofrm
+            fm.convertTo(ft,-1,k,b);
+            // Add to average 
+            add(avg, ft/buf.size(), (Mat&)avg);
+        }
+        n++;
+#else
         add(avg, (*i)/buf.size(), (Mat&)avg);
-
+#endif
+    }
+    
     saveFrame(smallf);
 
     diff = avg-smallf;

@@ -43,6 +43,11 @@ Plot shows:
   2. Motion (smoothed/integrated) - **blue**
   3. Detection threshold - **green**
 
+Keys:
+  * `q` - quit
+  * `p` - pause detection
+  * `s` - (re)start detection
+
 ## AUTHORS ##
 
 Developed by Codeminders http://www.codeminders.com/

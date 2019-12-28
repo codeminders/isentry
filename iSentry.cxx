@@ -139,17 +139,22 @@ int main(int argc, char**argv)
     VideoCapture cap;
     if(argc<=0)
     {
-        std::cerr << "Reading camera " << std::endl;
+        std::cerr << "Reading from camera " << std::endl;
         // reading from camera
-        cap.open((int)(cfg["application"]["camera_device_id"]));
+        int deviceID = (int)(cfg["application"]["camera_device_id"]);
+        int apiID = cv::CAP_ANY;      // 0 = autodetect default API
+        cap.open(deviceID + apiID);
     } else
     {
         //reading from file
-        std::cerr << "Reading file " << argv[0] << std::endl;
+        std::cerr << "Reading from file " << argv[0] << std::endl;
         cap.open(argv[0]);
     }
     if(!cap.isOpened())  // check if we succeeded
+    {
+        std::cerr << "ERROR! Unable to open camera!" << std::endl;
         exit(-1);
+    }
 
     MotionEstimator me(cfg["motion_detection"]);
     MotionDetector md(&me, cfg["motion_detection"]);
@@ -181,19 +186,27 @@ int main(int argc, char**argv)
     for(;;)
     {
         Mat frame;
-        cap >> frame; // get a new frame from camera
+        cap.read(frame); // get a new frame from camera
         pair<cv::Mat,time_t> tframe = make_pair(frame,time(NULL));
         isentry.addFrame(tframe);
 
-        int key = waitKey(30);
+        int key = waitKey(30) & 0xFF;
         if(key >= 0)
         {
-            if(key=='q')
+            if(key=='p')
+            { 
+                std::cerr << "Pausing detection" << std::endl;
                 isentry.stop();
-            else if(key=='a')
+            } else if(key=='s')
+            {
+                std::cerr << "Starting detection" << std::endl;
                 isentry.start();
-            else
+            } else if(key=='q')
+            { 
+                std::cerr << "Quitting" << std::endl;
+                isentry.stop();
                 break;
+            }
         }
     }
 

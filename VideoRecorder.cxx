@@ -2,8 +2,8 @@
 #include <time.h>
 #include <iostream>
 
-#include <cv.h>
-#include <highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
 
 #include "VideoRecorder.hxx"
 
@@ -43,7 +43,7 @@ void ISentry::VideoRecorder::addFrame(std::pair<cv::Mat,time_t> &m)
         } else {
             string fname = getFilename(m.second);
             std::cerr << "Writing " << fname << std::endl;
-            writer=new cv::VideoWriter(fname,CV_FOURCC('D','I','V','X'), 30, m.first.size(), true);
+            writer = new cv::VideoWriter(fname,cv::VideoWriter::fourcc('D','I','V','X'), 30, m.first.size(), true);
             //TODO: error handling
         }
     } 

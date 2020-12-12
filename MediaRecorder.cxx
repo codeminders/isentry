@@ -1,7 +1,7 @@
 #include "MediaRecorder.hxx"
 
-#include <cv.h>
-#include <highgui/highgui.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include "ImageRecorder.hxx"
@@ -24,7 +24,7 @@ void ISentry::MediaRecorder::rescale(const cv::Mat &m,cv::Mat &m_s)
 
     float scaler = m.cols/max_width;
     Size newSize(m.cols/scaler, m.rows/scaler);
-    resize(m, m_s, newSize, 0, 0, CV_INTER_LINEAR);
+    cv::resize(m, m_s, newSize, 0, 0, INTER_LINEAR);
 }
 
 std::string ISentry::MediaRecorder::getFilename(time_t rawtime)

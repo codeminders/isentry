@@ -28,9 +28,10 @@
 #endif 
 
 #include <vector>
-#include <cv.h>
-#include <highgui.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
 
+using namespace cv;
 using namespace std;
 
 namespace CvPlot
@@ -48,7 +49,7 @@ namespace CvPlot
 
 		// allow automatic curve color
 		bool auto_color;
-		CvScalar color;
+                cv::Scalar color;
 
 		Series(void);
 		Series(const Series& s);
@@ -59,7 +60,7 @@ namespace CvPlot
 
 		void SetData(int n, float *p);
 
-		void SetColor(CvScalar color, bool auto_color = true);
+		void SetColor(cv::Scalar color, bool auto_color = true);
 		void SetColor(int R, int G, int B, bool auto_color = true);
 	};
 
@@ -69,14 +70,14 @@ namespace CvPlot
 	private:
 		// window name
 		string figure_name;
-		CvSize figure_size;
+                cv::Size figure_size;
 
 		// margin size
 		int    border_size;
 
-		CvScalar backgroud_color;
-		CvScalar axis_color;
-		CvScalar text_color;
+		cv::Scalar backgroud_color;
+		cv::Scalar axis_color;
+		cv::Scalar text_color;
 
 		// several curves
 		vector<Series> plots;
@@ -103,7 +104,7 @@ namespace CvPlot
 
 		string GetFigureName();
 		Series* Add(const Series &s);
-		void DrawLabels(IplImage *output, int posx, int posy);
+                void DrawLabels(cv::Mat &output, int posx, int posy);
 
 		// show plot window
 		void Show();
@@ -120,12 +121,12 @@ namespace CvPlot
         
 	private:
 		Figure();
-		void DrawAxis(IplImage *output);
-		void DrawPlots(IplImage *output);
+		void DrawAxis(cv::Mat &output);
+		void DrawPlots(cv::Mat &output);
 
 		// call before plot
 		void Initialize();
-		CvScalar GetAutoColor();
+		cv::Scalar GetAutoColor();
 		
 	};
 

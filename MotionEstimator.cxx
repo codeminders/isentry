@@ -35,13 +35,13 @@ void ISentry::MotionEstimator::addFrame(std::pair<cv::Mat,time_t> &tframe)
     Mat &frame=tframe.first;
 
     Mat bw;
-    cvtColor(frame, bw, CV_BGR2GRAY);
+    cv::cvtColor(frame, bw, COLOR_BGR2GRAY);
     
     float scaler = bw.cols/internal_frame_width;
     Size newSize(bw.cols/scaler, bw.rows/scaler);
     
     Mat smallf;
-    resize(bw, small, newSize, 0, 0, CV_INTER_LINEAR);
+    cv::resize(bw, small, newSize, 0, 0, INTER_LINEAR);
     small.convertTo(smallf,DataType<float>::type);
 
     if(buf.empty())

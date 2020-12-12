@@ -1,5 +1,7 @@
 // Matlab style plot functions for OpenCV by Changbo (zoccob@gmail).
 
+#include <opencv2/imgproc.hpp>
+
 #include "cvplot.hxx"
 
 namespace CvPlot
@@ -8,9 +10,9 @@ namespace CvPlot
 //  use anonymous namespace to hide global variables.
 namespace
 {
-	const CvScalar CV_BLACK = CV_RGB(0,0,0);
-	const CvScalar CV_WHITE = CV_RGB(255,255,255);
-	const CvScalar CV_GREY = CV_RGB(150,150,150);
+        const cv::Scalar CV_BLACK = CV_RGB(0,0,0);
+        const cv::Scalar CV_WHITE = CV_RGB(255,255,255);
+        const cv::Scalar CV_GREY = CV_RGB(150,150,150);
 
 	PlotManager pm;
 }
@@ -64,7 +66,7 @@ void Series::SetColor(int R, int G, int B, bool auto_color)
 	SetColor(color, auto_color);
 }
 
-void Series::SetColor(CvScalar color, bool auto_color)
+void Series::SetColor(cv::Scalar color, bool auto_color)
 {
 	this->color = color;
 	this->auto_color = auto_color;
@@ -80,7 +82,7 @@ Figure::Figure(const string name)
 	axis_color = CV_BLACK;
 	text_color = CV_BLACK;
 
-	figure_size = cvSize(600, 200);
+	figure_size = cv::Size(600, 200);
 	border_size = 30;
 
 	plots.reserve(10);
@@ -134,7 +136,7 @@ void Figure::Initialize()
         if(!custom_range_y)
         {
             float *p = iter->data;
-            for (int i=0; i < iter->count; i++)
+            for (unsigned int i=0; i < iter->count; i++)
             {
                 float v = p[i];
                 if (v < y_min)
@@ -166,10 +168,10 @@ void Figure::Initialize()
 	y_scale = (float)(figure_size.height - border_size * 2) / y_range;
 }
 
-CvScalar Figure::GetAutoColor()
+cv::Scalar Figure::GetAutoColor()
 {
 	// 	change color for each curve.
-	CvScalar col;
+	cv::Scalar col;
 
 	switch (color_index)
 	{
@@ -208,7 +210,7 @@ CvScalar Figure::GetAutoColor()
 	return col;
 }
 
-void Figure::DrawAxis(IplImage *output)
+void Figure::DrawAxis(cv::Mat &output)
 {
 	int bs = border_size;		
 	int h = figure_size.height;
@@ -225,17 +227,15 @@ void Figure::DrawAxis(IplImage *output)
 		y_ref = 0;
 
 	int x_axis_pos = h - bs - cvRound((y_ref - y_min) * y_scale);
-
-	cvLine(output, cvPoint(bs,     x_axis_pos), 
-		           cvPoint(w - bs, x_axis_pos),
-				   axis_color);
-	cvLine(output, cvPoint(bs, h - bs), 
-		           cvPoint(bs, h - bs - gh),
-				   axis_color);
-
-	// Write the scale of the y axis
-	CvFont font;
-	cvInitFont(&font,CV_FONT_HERSHEY_PLAIN,0.55,0.7, 0,1,CV_AA);
+        
+        cv::line(output,
+               cv::Point2i(bs,     x_axis_pos), 
+               cv::Point2i(w - bs, x_axis_pos),
+               axis_color);
+        cv::line(output,
+               cv::Point2i(bs, h - bs), 
+               cv::Point2i(bs, h - bs - gh),
+               axis_color);
 
 	int chw = 6, chh = 10;
 	char text[16];
@@ -244,32 +244,56 @@ void Figure::DrawAxis(IplImage *output)
 	if ((y_max - y_ref) > 0.05 * (y_max - y_min))
 	{
 		snprintf(text, sizeof(text)-1, "%.1f", y_max);
-		cvPutText(output, text, cvPoint(bs / 5, bs - chh / 2), &font, text_color);
+                cv::putText(output, text,
+                            cv::Point(bs / 5, bs - chh / 2),
+                            cv::FONT_HERSHEY_PLAIN,
+                            0.55,
+                            text_color,
+                            1
+                );
 	}
 	// y min
 	if ((y_ref - y_min) > 0.05 * (y_max - y_min))
 	{
 		snprintf(text, sizeof(text)-1, "%.1f", y_min);
-		cvPutText(output, text, cvPoint(bs / 5, h - bs + chh), &font, text_color);
+		cv::putText(output, text, cv::Point(bs / 5, h - bs + chh),
+                            cv::FONT_HERSHEY_PLAIN,
+                            0.55,
+                            text_color,
+                            1
+                );
 	}
 
 	// x axis
 	snprintf(text, sizeof(text)-1, "%.1f", y_ref);
-	cvPutText(output, text, cvPoint(bs / 5, x_axis_pos + chh / 2), &font, text_color);
+        cv::putText(output, text, cv::Point(bs / 5, x_axis_pos + chh / 2),
+                            cv::FONT_HERSHEY_PLAIN,
+                            0.55,
+                            text_color,
+                            1
+                );
 
 	// Write the scale of the x axis
 	snprintf(text, sizeof(text)-1, "%.0f", x_max );
-	cvPutText(output, text, cvPoint(w - bs - strlen(text) * chw, x_axis_pos + chh), 
-		      &font, text_color);
+        cv::putText(output, text, cv::Point(w - bs - strlen(text) * chw, x_axis_pos + chh), 
+                            cv::FONT_HERSHEY_PLAIN,
+                            0.55,
+                            text_color,
+                            1
+                );
 
 	// x min
 	snprintf(text, sizeof(text)-1, "%.0f", x_min );
-	cvPutText(output, text, cvPoint(bs, x_axis_pos + chh), 
-		      &font, text_color);
+        cv::putText(output, text, cv::Point(bs, x_axis_pos + chh), 
+                            cv::FONT_HERSHEY_PLAIN,
+                            0.55,
+                            text_color,
+                            1
+                );
 
 
 }
-void Figure::DrawPlots(IplImage *output)
+void Figure::DrawPlots(cv::Mat &output)
 {
 	int bs = border_size;		
 	int h = figure_size.height;
@@ -286,32 +310,29 @@ void Figure::DrawPlots(IplImage *output)
 		if (iter->auto_color == true)
 			iter->SetColor(GetAutoColor());
 
-		CvPoint prev_point;
-		for (int i=0; i<iter->count; i++)
+                cv::Point prev_point;
+		for (unsigned int i=0; i<iter->count; i++)
 		{
 			int y = cvRound(( p[i] - y_min) * y_scale);
 			int x = cvRound((   i  - x_min) * x_scale);
-			CvPoint next_point = cvPoint(bs + x, h - (bs + y));
-			cvCircle(output, next_point, 1, iter->color, 1);
+                        cv::Point next_point = cv::Point(bs + x, h - (bs + y));
+                        cv::circle(output, next_point, 1, iter->color, 1);
 			
 			// draw a line between two points
 			if (i >= 1)
-				cvLine(output, prev_point, next_point, iter->color, 1, CV_AA);
+                            cv::line(output, prev_point, next_point, iter->color, 1, LINE_AA);
 			prev_point = next_point;
 		}
 	}
 
 }
 
-void Figure::DrawLabels(IplImage *output, int posx, int posy)
+void Figure::DrawLabels(cv::Mat &output, int posx, int posy)
 {
 
-	CvFont font;
-	cvInitFont(&font,CV_FONT_HERSHEY_PLAIN,0.55,1.0, 0,1,CV_AA);
-	
 	// character size
 	//int chw = 6;
-    int chh = 8;
+        int chh = 8;
 
 	for (vector<Series>::iterator iter = plots.begin();
 		iter != plots.end();
@@ -321,13 +342,17 @@ void Figure::DrawLabels(IplImage *output, int posx, int posy)
 		// draw label if one is available
 		if (lbl.length() > 0)
 		{
-			cvLine(output, cvPoint(posx, posy - chh / 2), cvPoint(posx + 15, posy - chh / 2),
-				   iter->color, 2, CV_AA);
+                    cv::line(output, cv::Point(posx, posy - chh / 2), cv::Point(posx + 15, posy - chh / 2),
+                             iter->color, 2, LINE_AA);
 
-			cvPutText(output, lbl.c_str(), cvPoint(posx + 20, posy), 
-					  &font, iter->color);
+                    cv::putText(output, lbl.c_str(), cv::Point(posx + 20, posy),
+                                cv::FONT_HERSHEY_PLAIN,
+                                0.55,
+                                iter->color,
+                                1
+                    );
 
-			posy += int(chh * 1.5);
+                    posy += int(chh * 1.5);
 		}
 	}
 
@@ -338,8 +363,7 @@ void Figure::Show()
 {
 	Initialize();
 
-	IplImage *output = cvCreateImage(figure_size, IPL_DEPTH_8U, 3);
-	cvSet(output, backgroud_color, 0);
+        cv::Mat output(figure_size, CV_8UC3, backgroud_color);
 
 	DrawAxis(output);
 
@@ -347,10 +371,10 @@ void Figure::Show()
 
 	DrawLabels(output, figure_size.width - 100, 10);
 
-	cvShowImage(figure_name.c_str(), output);
-	cvWaitKey(1);
-	cvReleaseImage(&output);
+        cv::namedWindow(figure_name, 1);
+        cv::imshow(figure_name, output);
 
+        cv::waitKey(1);
 }
 
 
